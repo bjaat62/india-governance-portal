@@ -182,14 +182,18 @@ export async function getPeople(request: Request, response: Response) {
     isCurrent: true
   };
 
+  let appointmentPositionFilter: Prisma.PositionWhereInput | undefined;
+
   if (filters.state) {
     appointmentFilter.state = { slug: filters.state };
   }
 
   if (filters.position) {
-    appointmentFilter.position = {
-      ...(appointmentFilter.position ?? {}),
-      slug: filters.position
+    appointmentPositionFilter = {
+      AND: [
+        ...(Array.isArray(appointmentPositionFilter?.AND) ? appointmentPositionFilter.AND : []),
+        { slug: filters.position }
+      ]
     };
   }
 
@@ -198,10 +202,14 @@ export async function getPeople(request: Request, response: Response) {
   }
 
   if (filters.category) {
-    appointmentFilter.position = {
-      ...(appointmentFilter.position ?? {}),
+    appointmentPositionFilter = {
+      ...(appointmentPositionFilter ?? {}),
       category: filters.category.toUpperCase() as PositionCategory
     };
+  }
+
+  if (appointmentPositionFilter) {
+    appointmentFilter.position = appointmentPositionFilter;
   }
 
   const personWhere: Prisma.PersonWhereInput = {
