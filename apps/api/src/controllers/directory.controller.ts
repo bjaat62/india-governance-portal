@@ -1,4 +1,4 @@
-import { PositionCategory, type Prisma } from "@prisma/client";
+import { PositionCategory, Prisma } from "@prisma/client";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
