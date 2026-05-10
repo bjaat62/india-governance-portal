@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 36 33% 97%;
+  --foreground: 220 31% 12%;
+  --muted: 210 24% 94%;
+  --muted-foreground: 215 15% 40%;
+  --border: 210 22% 86%;
+  --card: 0 0% 100%;
+  --accent: 24 100% 96%;
+  --primary: 215 80% 18%;
+}
+
+.dark {
+  --background: 220 32% 10%;
+  --foreground: 32 24% 95%;
+  --muted: 220 27% 15%;
+  --muted-foreground: 214 15% 70%;
+  --border: 215 20% 22%;
+  --card: 220 26% 13%;
+  --accent: 24 36% 18%;
+  --primary: 37 90% 62%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.08), transparent 24%),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.09), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.12), transparent 24%),
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.1), transparent 28%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0)),
+    hsl(var(--background));
+}
+
+::selection {
+  background: rgba(249, 115, 22, 0.24);
+}
+
+@layer components {
+  .surface {
+    @apply bg-card/80 backdrop-blur-sm;
+  }
+}

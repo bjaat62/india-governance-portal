@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum StateType {
+  STATE
+  UNION_TERRITORY
+}
+
+enum PositionCategory {
+  CONSTITUTIONAL
+  POLITICAL
+  JUDICIAL
+  DEFENCE
+  LEGISLATIVE
+  ADMINISTRATIVE
+}
+
+enum PositionLevel {
+  NATIONAL
+  STATE
+  UNION_TERRITORY
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PoliticalParty {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  slug         String   @unique
+  abbreviation String?
+  ideology     String?
+  colorHex     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  people       Person[]
+}
+
+model State {
+  id              String      @id @default(cuid())
+  name            String      @unique
+  slug            String      @unique
+  code            String      @unique
+  type            StateType
+  capital         String?
+  zone            String?
+  description     String?
+  officialWebsite String?
+  mapX            Float?
+  mapY            Float?
+  assemblySeats   Int?
+  councilSeats    Int?
+  lokSabhaSeats   Int?
+  rajyaSabhaSeats Int?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  appointments    Appointment[]
+  residents       Person[]    @relation("HomeState")
+}
+
+model Position {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  slug        String           @unique
+  category    PositionCategory
+  level       PositionLevel
+  description String?
+  sortOrder   Int              @default(0)
+  isElective  Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  appointments Appointment[]
+}
+
+model Ministry {
+  id              String        @id @default(cuid())
+  name            String        @unique
+  slug            String        @unique
+  shortName       String?
+  description     String?
+  officialWebsite String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  appointments    Appointment[]
+}
+
+model Person {
+  id               String          @id @default(cuid())
+  fullName         String
+  slug             String          @unique
+  honorific        String?
+  gender           String?
+  dateOfBirth      DateTime?
+  photoUrl         String?
+  biography        String?
+  education        String?
+  officialWebsite  String?
+  twitterUrl       String?
+  instagramUrl     String?
+  facebookUrl      String?
+  linkedinUrl      String?
+  wikipediaUrl     String?
+  seoDescription   String?
+  homeStateId      String?
+  politicalPartyId String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  homeState        State?          @relation("HomeState", fields: [homeStateId], references: [id])
+  politicalParty   PoliticalParty? @relation(fields: [politicalPartyId], references: [id])
+  appointments     Appointment[]
+
+  @@index([fullName])
+}
+
+model Appointment {
+  id            String    @id @default(cuid())
+  personId      String
+  positionId    String
+  stateId       String?
+  ministryId    String?
+  titleOverride String?
+  categoryTag   String?
+  startDate     DateTime
+  endDate       DateTime?
+  isCurrent     Boolean   @default(true)
+  orderRank     Int       @default(0)
+  sourceUrl     String?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  person        Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  position      Position  @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  state         State?    @relation(fields: [stateId], references: [id], onDelete: SetNull)
+  ministry      Ministry? @relation(fields: [ministryId], references: [id], onDelete: SetNull)
+
+  @@index([positionId, isCurrent])
+  @@index([stateId, isCurrent])
+  @@index([personId, isCurrent])
+}
