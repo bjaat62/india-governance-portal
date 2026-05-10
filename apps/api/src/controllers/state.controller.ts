@@ -68,27 +68,44 @@ export async function getStateBySlug(request: Request, response: Response) {
   }
 
   const sections = {
-    governor: state.appointments.find(
-      (appointment) =>
-        appointment.position.slug === "governor" ||
-        appointment.position.slug === "lt-governor-administrator"
-    ),
-    chiefMinister: state.appointments.find((appointment) => appointment.position.slug === "chief-minister"),
-    ministers: state.appointments.filter((appointment) =>
-      ["chief-minister", "deputy-chief-minister", "state-cabinet-minister"].includes(appointment.position.slug)
-    ),
-    mlas: state.appointments.filter((appointment) => appointment.position.slug === "member-of-legislative-assembly"),
-    mps: state.appointments.filter((appointment) =>
-      ["lok-sabha-mp", "rajya-sabha-mp"].includes(appointment.position.slug)
-    ),
-    vidhanSabhaSpeaker: state.appointments.find((appointment) => appointment.position.slug === "vidhan-sabha-speaker"),
-    vidhanParishadChairman: state.appointments.find(
-      (appointment) => appointment.position.slug === "vidhan-parishad-chairman"
-    ),
-    administrators: state.appointments.filter((appointment) =>
-      ["chief-secretary", "governor", "lt-governor-administrator"].includes(appointment.position.slug)
+  governor: state.appointments.find(
+    (appointment: any) =>
+      appointment.position.slug === "governor" ||
+      appointment.position.slug === "lt-governor-administrator"
+  ),
+
+  chiefMinister: state.appointments.find(
+    (appointment: any) => appointment.position.slug === "chief-minister"
+  ),
+
+  ministers: state.appointments.filter((appointment: any) =>
+    ["chief-minister", "deputy-chief-minister", "state-cabinet-minister"].includes(
+      appointment.position.slug
     )
-  };
+  ),
+
+  mlas: state.appointments.filter(
+    (appointment: any) => appointment.position.slug === "member-of-legislative-assembly"
+  ),
+
+  mps: state.appointments.filter((appointment: any) =>
+    ["lok-sabha-mp", "rajya-sabha-mp"].includes(appointment.position.slug)
+  ),
+
+  vidhanSabhaSpeaker: state.appointments.find(
+    (appointment: any) => appointment.position.slug === "vidhan-sabha-speaker"
+  ),
+
+  vidhanParishadChairman: state.appointments.find(
+    (appointment: any) => appointment.position.slug === "vidhan-parishad-chairman"
+  ),
+
+  administrators: state.appointments.filter((appointment: any) =>
+    ["chief-secretary", "governor", "lt-governor-administrator"].includes(
+      appointment.position.slug
+    )
+  )
+};
 
   response.json({
     state: {
